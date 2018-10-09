@@ -8,25 +8,44 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_product_selector.*
 import kotlinx.android.synthetic.main.app_bar_product_selector.*
+import kotlinx.android.synthetic.main.content_product_selector.*
 import ru.supernacho.kt.passepartout.App
 import ru.supernacho.kt.passepartout.R
+import ru.supernacho.kt.passepartout.mvpmoxyfix.MvpAppCompatActivity
+import ru.supernacho.kt.passepartout.presenter.ProductPresenter
 import javax.inject.Inject
 
-class ProductSelector : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNavigationItemSelectedListener {
 
     @Inject
     lateinit var app: App
+
+    @InjectPresenter
+    lateinit var presenter: ProductPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_selector)
         setSupportActionBar(toolbar)
-        app.appComponent.inject(this)
+        App.instance.appComponent.inject(this)
         fabInit()
         navDrawerInit()
+       
     }
+
+    @ProvidePresenter
+    fun providePresenter(): ProductPresenter {
+        val presenter = ProductPresenter(AndroidSchedulers.mainThread())
+        App.instance.appComponent.inject(presenter)
+        return presenter
+    }
+
 
     private fun navDrawerInit() {
         val toggle = ActionBarDrawerToggle(
