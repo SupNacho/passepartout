@@ -36,7 +36,7 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
         App.instance.appComponent.inject(this)
         fabInit()
         navDrawerInit()
-       
+
     }
 
     @ProvidePresenter
@@ -46,6 +46,14 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
         return presenter
     }
 
+
+    override fun updateCategories() {
+
+    }
+
+    override fun updateProducts() {
+
+    }
 
     private fun navDrawerInit() {
         val toggle = ActionBarDrawerToggle(
