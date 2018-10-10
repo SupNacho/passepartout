@@ -67,7 +67,9 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
     private fun fabInit() {
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+                    .setAction("Action") {
+                        presenter.checkDb()
+                    }.show()
         }
     }
 
