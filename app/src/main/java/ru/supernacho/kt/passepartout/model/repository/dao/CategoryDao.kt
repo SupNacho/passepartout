@@ -1,5 +1,6 @@
 package ru.supernacho.kt.passepartout.model.repository.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import ru.supernacho.kt.passepartout.model.entity.CategoryEntity
 

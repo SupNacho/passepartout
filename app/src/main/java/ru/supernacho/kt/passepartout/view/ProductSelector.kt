@@ -5,10 +5,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,8 +18,14 @@ import kotlinx.android.synthetic.main.app_bar_product_selector.*
 import kotlinx.android.synthetic.main.content_product_selector.*
 import ru.supernacho.kt.passepartout.App
 import ru.supernacho.kt.passepartout.R
+import ru.supernacho.kt.passepartout.model.entity.CategoryEntity
+import ru.supernacho.kt.passepartout.model.entity.ProductWithCategoryEntity
 import ru.supernacho.kt.passepartout.mvpmoxyfix.MvpAppCompatActivity
 import ru.supernacho.kt.passepartout.presenter.ProductPresenter
+import ru.supernacho.kt.passepartout.view.adapters.CategoryRvAdapter
+import ru.supernacho.kt.passepartout.view.adapters.ProductsRvAdapter
+import ru.supernacho.kt.passepartout.view.util.CategoryDiffUtilCallBack
+import ru.supernacho.kt.passepartout.view.util.ProdsCatsDiffUtilCallBack
 import javax.inject.Inject
 
 class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +36,11 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
     @InjectPresenter
     lateinit var presenter: ProductPresenter
 
+    private lateinit var categoryAdapter: CategoryRvAdapter
+    private lateinit var productsAdapter: ProductsRvAdapter
+    private lateinit var catLayoutManager : LinearLayoutManager
+    private lateinit var productsLayoutManager : LinearLayoutManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_selector)
@@ -36,7 +48,28 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
         App.instance.appComponent.inject(this)
         fabInit()
         navDrawerInit()
+        initCategoriesRv()
+        initProductsRv()
+        presenter.getProductsByCategory(null)
+        presenter.getCategories()
+    }
 
+    private fun initProductsRv() {
+        productsAdapter = ProductsRvAdapter(presenter)
+        productsLayoutManager = LinearLayoutManager(this)
+        productsLayoutManager.orientation = RecyclerView.VERTICAL
+        val productsRv = this.rv_products_prod_selector
+        productsRv.layoutManager = productsLayoutManager
+        productsRv.adapter = productsAdapter
+    }
+
+    private fun initCategoriesRv() {
+        categoryAdapter = CategoryRvAdapter(presenter)
+        catLayoutManager = LinearLayoutManager(this)
+        catLayoutManager.orientation = RecyclerView.HORIZONTAL
+        val categoryRv = this.rv_categories_prod_selector
+        categoryRv.layoutManager = catLayoutManager
+        categoryRv.adapter = categoryAdapter
     }
 
     @ProvidePresenter
@@ -47,12 +80,21 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
     }
 
 
-    override fun updateCategories() {
-
+    override fun updateCategories(categories: List<CategoryEntity>) {
+        val pos = catLayoutManager.findLastVisibleItemPosition()
+        val catDiffUtil = CategoryDiffUtilCallBack(categoryAdapter.categories, categories)
+        val diffResult = DiffUtil.calculateDiff(catDiffUtil)
+        diffResult.dispatchUpdatesTo(categoryAdapter)
+        categoryAdapter.categories = categories
+        catLayoutManager.scrollToPositionWithOffset(pos, 0)
     }
 
-    override fun updateProducts() {
-
+    override fun updateProducts(products: List<ProductWithCategoryEntity>) {
+        val pos = productsLayoutManager.findLastVisibleItemPosition()
+        val diffResult = DiffUtil.calculateDiff(ProdsCatsDiffUtilCallBack(productsAdapter.products, products))
+        diffResult.dispatchUpdatesTo(productsAdapter)
+        productsAdapter.products = products
+        productsLayoutManager.scrollToPositionWithOffset(pos, 0)
     }
 
     private fun navDrawerInit() {
@@ -69,6 +111,7 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action") {
                         presenter.checkDb()
+                        presenter.getCategories()
                     }.show()
         }
     }
