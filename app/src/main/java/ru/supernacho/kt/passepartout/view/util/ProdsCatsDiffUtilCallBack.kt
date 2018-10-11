@@ -3,8 +3,9 @@ package ru.supernacho.kt.passepartout.view.util
 import androidx.recyclerview.widget.DiffUtil
 import ru.supernacho.kt.passepartout.model.entity.CategoryEntity
 import ru.supernacho.kt.passepartout.model.entity.ProductWithCategoryEntity
+import ru.supernacho.kt.passepartout.model.entity.ProductWithPrices
 
-class ProdsCatsDiffUtilCallBack(private val oldList: List<ProductWithCategoryEntity>, private val newList: List<ProductWithCategoryEntity>) : DiffUtil.Callback() {
+class ProdsCatsDiffUtilCallBack(private val oldList: List<ProductWithPrices>, private val newList: List<ProductWithPrices>) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int)
     = oldList[oldItemPosition] == newList[newItemPosition]
 
@@ -13,6 +14,6 @@ class ProdsCatsDiffUtilCallBack(private val oldList: List<ProductWithCategoryEnt
     override fun getNewListSize() = newList.size
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int)
-            = oldList[oldItemPosition].category == newList[newItemPosition].category
-            && oldList[oldItemPosition].product == newList[newItemPosition].product
+            = oldList[oldItemPosition].productWithCategoryEntity == newList[newItemPosition].productWithCategoryEntity
+            && oldList[oldItemPosition].shopPricesEntity == newList[newItemPosition].shopPricesEntity
 }

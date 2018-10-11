@@ -20,6 +20,7 @@ import ru.supernacho.kt.passepartout.App
 import ru.supernacho.kt.passepartout.R
 import ru.supernacho.kt.passepartout.model.entity.CategoryEntity
 import ru.supernacho.kt.passepartout.model.entity.ProductWithCategoryEntity
+import ru.supernacho.kt.passepartout.model.entity.ProductWithPrices
 import ru.supernacho.kt.passepartout.mvpmoxyfix.MvpAppCompatActivity
 import ru.supernacho.kt.passepartout.presenter.ProductPresenter
 import ru.supernacho.kt.passepartout.view.adapters.CategoryRvAdapter
@@ -89,7 +90,7 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
         catLayoutManager.scrollToPositionWithOffset(pos, 0)
     }
 
-    override fun updateProducts(products: List<ProductWithCategoryEntity>) {
+    override fun updateProducts(products: List<ProductWithPrices>) {
         val pos = productsLayoutManager.findLastVisibleItemPosition()
         val diffResult = DiffUtil.calculateDiff(ProdsCatsDiffUtilCallBack(productsAdapter.products, products))
         diffResult.dispatchUpdatesTo(productsAdapter)

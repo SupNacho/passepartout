@@ -29,14 +29,33 @@ class DbRepository(
         it.onSuccess(list)
     }
 
-    fun getProductsWithCategories(categoryEntity: CategoryEntity?): Single<List<ProductWithCategoryEntity>>
-            = Single.create<List<ProductWithCategoryEntity>> {
+    fun getProductsWithCategories(categoryEntity: CategoryEntity?): Single<List<ProductWithPrices>> = Single.create<List<ProductWithPrices>> {
         if (categoryEntity?.idCategory != null) {
             val list = dbRoom.catProducts().getCatsAndProdsById(categoryEntity.idCategory)
-            it.onSuccess(list)
+            val shops = dbRoom.shopProductsDao().getShopsAndProds()
+            val finalList = mutableListOf<ProductWithPrices>()
+            list.forEach {
+                val entry = ProductWithPrices(it)
+                shops.forEach {
+                    if (entry.productWithCategoryEntity.product.productId == it.product.productId)
+                        (entry.shopPricesEntity as ArrayList).add(it)
+                }
+                finalList.add(entry)
+            }
+            it.onSuccess(finalList as List<ProductWithPrices>)
         } else {
+            val finalList = mutableListOf<ProductWithPrices>()
             val list = dbRoom.catProducts().getCatsAndProds()
-            it.onSuccess(list)
+            val shops = dbRoom.shopProductsDao().getShopsAndProds()
+            list.forEach {
+                val entry = ProductWithPrices(it)
+                shops.forEach {
+                    if (entry.productWithCategoryEntity.product.productId == it.product.productId)
+                        (entry.shopPricesEntity as ArrayList).add(it)
+                }
+                finalList.add(entry)
+            }
+            it.onSuccess(finalList)
         }
     }
 }

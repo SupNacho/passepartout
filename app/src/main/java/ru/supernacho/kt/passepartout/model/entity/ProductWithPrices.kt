@@ -1,11 +1,10 @@
 package ru.supernacho.kt.passepartout.model.entity
 
-import androidx.room.Embedded
 
 class ProductWithPrices(
         val productWithCategoryEntity: ProductWithCategoryEntity,
-        @Embedded
-        val shopPricesEntity: ShopPricesEntity
+
+        val shopPricesEntity: List<ShopPricesEntity> = mutableListOf()
 ) {
         override fun equals(other: Any?): Boolean {
                 if (this === other) return true

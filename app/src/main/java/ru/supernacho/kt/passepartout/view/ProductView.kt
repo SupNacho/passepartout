@@ -6,9 +6,11 @@ import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import ru.supernacho.kt.passepartout.model.entity.CategoryEntity
 import ru.supernacho.kt.passepartout.model.entity.ProductWithCategoryEntity
+import ru.supernacho.kt.passepartout.model.entity.ProductWithPrices
 
 @StateStrategyType(SingleStateStrategy::class)
 interface ProductView: MvpView {
     fun updateCategories(categories: List<CategoryEntity>)
-    fun updateProducts(products: List<ProductWithCategoryEntity>)
+    fun updateProducts(products: List<ProductWithPrices>)
+//    fun updateProducts(products: List<ProductWithCategoryEntity>)
 }

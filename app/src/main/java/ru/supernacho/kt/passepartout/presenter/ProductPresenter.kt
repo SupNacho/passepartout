@@ -9,6 +9,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.supernacho.kt.passepartout.model.entity.CategoryEntity
 import ru.supernacho.kt.passepartout.model.entity.ProductWithCategoryEntity
+import ru.supernacho.kt.passepartout.model.entity.ProductWithPrices
 import ru.supernacho.kt.passepartout.model.repository.DbRepository
 import ru.supernacho.kt.passepartout.view.ProductView
 import javax.inject.Inject
@@ -18,7 +19,8 @@ class ProductPresenter(val uiSchduler: Scheduler) : MvpPresenter<ProductView>() 
     @Inject
     lateinit var dbRepository: DbRepository
     var categories = listOf<CategoryEntity>()
-    var products = listOf<ProductWithCategoryEntity>()
+//    var products = listOf<ProductWithCategoryEntity>()
+    var products = listOf<ProductWithPrices>()
 
     fun checkDb(){
         Log.d("DB", " Test DB here")
@@ -48,8 +50,8 @@ class ProductPresenter(val uiSchduler: Scheduler) : MvpPresenter<ProductView>() 
         dbRepository.getProductsWithCategories(categoryEntity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(uiSchduler)
-                .subscribe(object : SingleObserver<List<ProductWithCategoryEntity>>{
-                    override fun onSuccess(t: List<ProductWithCategoryEntity>) {
+                .subscribe(object : SingleObserver<List<ProductWithPrices>>{
+                    override fun onSuccess(t: List<ProductWithPrices>) {
                         products = t
                         viewState.updateProducts(t)
                     }
@@ -63,4 +65,23 @@ class ProductPresenter(val uiSchduler: Scheduler) : MvpPresenter<ProductView>() 
                     }
                 })
     }
+//    fun getProductsByCategory(categoryEntity: CategoryEntity?){
+//        dbRepository.getProductsWithCategories(categoryEntity)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(uiSchduler)
+//                .subscribe(object : SingleObserver<List<ProductWithCategoryEntity>>{
+//                    override fun onSuccess(t: List<ProductWithCategoryEntity>) {
+//                        products = t
+//                        viewState.updateProducts(t)
+//                    }
+//
+//                    override fun onSubscribe(d: Disposable) {
+//
+//                    }
+//
+//                    override fun onError(e: Throwable) {
+//
+//                    }
+//                })
+//    }
 }
