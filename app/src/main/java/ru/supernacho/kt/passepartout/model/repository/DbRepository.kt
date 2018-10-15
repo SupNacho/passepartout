@@ -9,7 +9,7 @@ import ru.supernacho.kt.passepartout.model.entity.*
 class DbRepository(
         private var dbRoom: DbRoom) {
 
-    fun addCategory(categoryEntity: CategoryEntity) = GlobalScope.launch(Dispatchers.IO) {
+    fun addCategory(categoryEntity: CategoryEntity) = GlobalScope.async(Dispatchers.IO) {
         val id = dbRoom.categoryDao().insert(categoryEntity)
         Log.d("DB", "added  category id: $id name: ${categoryEntity.categoryName}")
     }

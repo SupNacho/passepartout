@@ -7,6 +7,7 @@ import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,7 @@ import ru.supernacho.kt.passepartout.mvpmoxyfix.MvpAppCompatActivity
 import ru.supernacho.kt.passepartout.presenter.ProductPresenter
 import ru.supernacho.kt.passepartout.view.adapters.CategoryRvAdapter
 import ru.supernacho.kt.passepartout.view.adapters.ProductsRvAdapter
+import ru.supernacho.kt.passepartout.view.dialogs.AddCategoryDialogFragment
 import ru.supernacho.kt.passepartout.view.util.CategoryDiffUtilCallBack
 import ru.supernacho.kt.passepartout.view.util.ProdsCatsDiffUtilCallBack
 import javax.inject.Inject
@@ -109,12 +111,21 @@ class ProductSelector : MvpAppCompatActivity(), ProductView, NavigationView.OnNa
 
     private fun fabInit() {
         fab.setOnClickListener { view ->
+            tempAddCategory()
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action") {
                         presenter.checkDb()
                         presenter.getCategories()
                     }.show()
         }
+    }
+
+    private fun tempAddCategory(){
+        AddCategoryDialogFragment().show(supportFragmentManager, "123123")
+    }
+
+    fun updateCategories(){
+        presenter.getCategories()
     }
 
     override fun onBackPressed() {
